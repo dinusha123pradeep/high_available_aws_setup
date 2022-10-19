@@ -19,7 +19,7 @@ variable "vpc_azs" {
 variable "vpc_public_subnets" {
   description = "Public subnets for VPC"
   type        = list(string)
-  default     = ["10.10.1.0/24", "10.10.1.0/24"]
+  default     = ["10.10.1.0/24", "10.10.2.0/24"]
 }
 
 variable "vpc_private_subnets" {
