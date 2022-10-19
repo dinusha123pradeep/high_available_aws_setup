@@ -54,3 +54,13 @@ variable "sg_dinusha_bastion" {
   type        = string
   default     = "dinusha_sg_bastion"
 }
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  type    = string
+  default = ""
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  type    = string
+  default = ""
+}
