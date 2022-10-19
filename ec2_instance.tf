@@ -10,6 +10,7 @@ module "dinusha_ec2_bastion" {
   instance_type          = "t2.micro"
   vpc_security_group_ids = [module.dinusha_sg_bastion.security_group_id]
   subnet_id              = module.dinusha_vpc.public_subnets[0]
+  key_name               = module.dinusha_key_pair.key_pair_name
 }
 
 data "aws_ami" "dinusha_ami" {

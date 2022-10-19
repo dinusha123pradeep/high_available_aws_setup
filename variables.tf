@@ -64,3 +64,15 @@ variable "AWS_ACCESS_KEY_ID" {
   type    = string
   default = ""
 }
+
+variable "dinusha_ssh_key" {
+  description = "Dinusha SSH key name"
+  type        = string
+  default     = "dinusha_ssh_key"
+}
+
+variable "public_key_path" {
+  description = "Public key path"
+  type        = string
+  default     = "keys/dinusha_public_key.pub"
+}
