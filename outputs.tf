@@ -7,3 +7,8 @@ output "dinusha_bastion_public_ips" {
   description = "Public IP address of Bastion node"
   value       = module.dinusha_ec2_bastion[0].public_ip
 }
+
+output "dinusha_elb_dns_name" {
+  description = "App ELB dns name"
+  value       = module.dinusha_elb_http.this_elb_dns_name
+}
