@@ -26,6 +26,9 @@ module "dinusha_ec2_app_1" {
   vpc_security_group_ids = [module.dinusha_sg_app.security_group_id]
   subnet_id              = module.dinusha_vpc.private_subnets[0]
   key_name               = module.dinusha_key_pair.key_pair_name
+
+  user_data_base64            = base64encode(local.user_data)
+  user_data_replace_on_change = true
 }
 
 module "dinusha_ec2_app_2" {
@@ -34,13 +37,16 @@ module "dinusha_ec2_app_2" {
 
   count = 1
 
-  name = var.ec2_app_1_name
+  name = var.ec2_app_2_name
 
   ami                    = data.aws_ami.dinusha_ami.id
   instance_type          = "t2.micro"
   vpc_security_group_ids = [module.dinusha_sg_app.security_group_id]
   subnet_id              = module.dinusha_vpc.private_subnets[1]
   key_name               = module.dinusha_key_pair.key_pair_name
+
+  user_data_base64            = base64encode(local.user_data)
+  user_data_replace_on_change = true
 }
 
 data "aws_ami" "dinusha_ami" {
