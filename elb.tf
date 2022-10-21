@@ -31,10 +31,6 @@ module "dinusha_elb_http" {
     timeout             = 5
   }
 
-  access_logs = {
-    bucket = "my-access-logs-bucket"
-  }
-
   // ELB attachments
   number_of_instances = 2
   instances           = [module.dinusha_ec2_app_1[0].id, module.dinusha_ec2_app_2[0].id]
