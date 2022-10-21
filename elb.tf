@@ -16,10 +16,10 @@ module "dinusha_elb_http" {
       lb_protocol       = "HTTP"
     },
     {
-      instance_port      = 8080
-      instance_protocol  = "HTTP"
-      lb_port            = 8080
-      lb_protocol        = "HTTP"
+      instance_port     = 8080
+      instance_protocol = "HTTP"
+      lb_port           = 8080
+      lb_protocol       = "HTTP"
     },
   ]
 
