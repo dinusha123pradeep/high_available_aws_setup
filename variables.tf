@@ -49,10 +49,28 @@ variable "ec2_bastion_name" {
   default     = "dinusha_ec2_bastion"
 }
 
+variable "ec2_app_1_name" {
+  description = "App server name"
+  type        = string
+  default     = "dinusha_ec2_app_server_1"
+}
+
+variable "ec2_app_2_name" {
+  description = "App server name"
+  type        = string
+  default     = "dinusha_ec2_app_server_2"
+}
+
 variable "sg_dinusha_bastion" {
   description = "Security group name for bastion host"
   type        = string
   default     = "dinusha_sg_bastion"
+}
+
+variable "sg_dinusha_app" {
+  description = "Security group name for app servers"
+  type        = string
+  default     = "dinusha_sg_app"
 }
 
 variable "AWS_SECRET_ACCESS_KEY" {
@@ -75,4 +93,10 @@ variable "public_key_path" {
   description = "Public key path"
   type        = string
   default     = "keys/dinusha_public_key.pub"
+}
+
+variable "dinusha_app_elb" {
+  description = "App ELB name"
+  type        = string
+  default     = "appelb"
 }

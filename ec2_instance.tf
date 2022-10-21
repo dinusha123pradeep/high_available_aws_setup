@@ -13,6 +13,36 @@ module "dinusha_ec2_bastion" {
   key_name               = module.dinusha_key_pair.key_pair_name
 }
 
+module "dinusha_ec2_app_1" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = ">=4.1.4"
+
+  count = 1
+
+  name = var.ec2_app_1_name
+
+  ami                    = data.aws_ami.dinusha_ami.id
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [module.dinusha_sg_app.security_group_id]
+  subnet_id              = module.dinusha_vpc.private_subnets[0]
+  key_name               = module.dinusha_key_pair.key_pair_name
+}
+
+module "dinusha_ec2_app_2" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = ">=4.1.4"
+
+  count = 1
+
+  name = var.ec2_app_1_name
+
+  ami                    = data.aws_ami.dinusha_ami.id
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [module.dinusha_sg_app.security_group_id]
+  subnet_id              = module.dinusha_vpc.private_subnets[1]
+  key_name               = module.dinusha_key_pair.key_pair_name
+}
+
 data "aws_ami" "dinusha_ami" {
   most_recent = true
 
