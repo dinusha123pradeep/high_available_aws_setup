@@ -73,6 +73,12 @@ variable "sg_dinusha_app" {
   default     = "dinusha_sg_app"
 }
 
+variable "sg_dinusha_elb" {
+  description = "Security group name for app ELB"
+  type        = string
+  default     = "dinusha_sg_elb"
+}
+
 variable "AWS_SECRET_ACCESS_KEY" {
   type    = string
   default = ""
