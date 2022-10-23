@@ -26,7 +26,7 @@ module "dinusha_sg_app" {
       to_port                  = 80
       protocol                 = "tcp"
       description              = "Http ingress from App elb"
-      source_security_group_id = "${module.dinusha_sg_elb.security_group_id}"
+      source_security_group_id = module.dinusha_sg_elb.security_group_id
   }]
   ingress_rules = ["ssh-tcp", "http-80-tcp", "https-443-tcp"]
   egress_rules  = ["all-all"]
@@ -42,5 +42,6 @@ module "dinusha_sg_elb" {
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
   ingress_rules       = ["http-80-tcp"]
+  egress_rules        = ["all-all"]
   egress_cidr_blocks  = ["10.10.3.0/24", "10.10.4.0/24"]
 }
