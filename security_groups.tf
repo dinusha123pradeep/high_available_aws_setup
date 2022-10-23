@@ -41,6 +41,6 @@ module "dinusha_sg_elb" {
   vpc_id      = module.dinusha_vpc.vpc_id
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["http-80-tpc"]
+  ingress_rules       = ["http-80-tcp"]
   egress_cidr_blocks  = ["10.10.3.0/24", "10.10.4.0/24"]
 }
