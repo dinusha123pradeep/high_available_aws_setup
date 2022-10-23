@@ -5,7 +5,7 @@ module "dinusha_elb_http" {
   name = var.dinusha_app_elb
 
   subnets         = [module.dinusha_vpc.private_subnets[0], module.dinusha_vpc.private_subnets[1]]
-  security_groups = [module.dinusha_sg_app.security_group_id]
+  security_groups = [module.dinusha_sg_elb.security_group_id]
   internal        = false
 
   listener = [
