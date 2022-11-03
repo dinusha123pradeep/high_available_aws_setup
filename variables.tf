@@ -79,16 +79,6 @@ variable "sg_dinusha_elb" {
   default     = "dinusha_sg_elb"
 }
 
-variable "AWS_SECRET_ACCESS_KEY" {
-  type    = string
-  default = ""
-}
-
-variable "AWS_ACCESS_KEY_ID" {
-  type    = string
-  default = ""
-}
-
 variable "dinusha_ssh_key" {
   description = "Dinusha SSH key name"
   type        = string
