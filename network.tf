@@ -93,7 +93,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block = var.vpc_cidr
+    cidr_block = var.vpc_public_subnets[0]
     gateway_id = aws_nat_gateway.vpc_nat.id
   }
 
