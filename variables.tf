@@ -106,3 +106,15 @@ variable "dinusha_app_elb" {
   type        = string
   default     = "appelb"
 }
+
+variable "ec2_bastion_count" {
+  description = "Bastion host count"
+  type        = number
+  default     = 1
+}
+
+variable "ec2_app_count" {
+  description = "EC2 App server count"
+  type        = number
+  default     = 1
+}

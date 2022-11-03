@@ -1,42 +1,34 @@
-module "dinusha_elb_http" {
-  source  = "terraform-aws-modules/elb/aws"
-  version = "~> 2.0"
-
-  name = var.dinusha_app_elb
-
-  subnets         = [module.dinusha_vpc.private_subnets[0], module.dinusha_vpc.private_subnets[1]]
-  security_groups = [module.dinusha_sg_elb.security_group_id]
+##########################
+# AWS Application load balancer
+##########################
+resource "aws_elb" "alb" {
+  name            = var.dinusha_app_elb
   internal        = false
+  security_groups = [aws_security_group.alb.id]
+  subnets         = aws_subnet.public[*].id
 
-  listener = [
-    {
-      instance_port     = 80
-      instance_protocol = "HTTP"
-      lb_port           = 80
-      lb_protocol       = "HTTP"
-    },
-    {
-      instance_port     = 8080
-      instance_protocol = "HTTP"
-      lb_port           = 8080
-      lb_protocol       = "HTTP"
-    },
-  ]
-
-  health_check = {
-    target              = "HTTP:80/"
-    interval            = 30
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 5
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
   }
 
-  // ELB attachments
-  number_of_instances = 2
-  instances           = [module.dinusha_ec2_app_1[0].id, module.dinusha_ec2_app_2[0].id]
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "HTTP:80/index.html"
+    interval            = 30
+  }
+
+  instances                   = aws_instance.app_server[*].id
+  cross_zone_load_balancing   = true
+  idle_timeout                = 100
+  connection_draining         = true
+  connection_draining_timeout = 300
 
   tags = {
-    Owner       = "Dinusha"
-    Environment = "dev"
+    "Name" = "dinusha_ha_alb"
   }
 }
