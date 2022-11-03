@@ -79,16 +79,6 @@ variable "sg_dinusha_elb" {
   default     = "dinusha_sg_elb"
 }
 
-variable "AWS_SECRET_ACCESS_KEY" {
-  type    = string
-  default = ""
-}
-
-variable "AWS_ACCESS_KEY_ID" {
-  type    = string
-  default = ""
-}
-
 variable "dinusha_ssh_key" {
   description = "Dinusha SSH key name"
   type        = string
@@ -105,4 +95,16 @@ variable "dinusha_app_elb" {
   description = "App ELB name"
   type        = string
   default     = "appelb"
+}
+
+variable "ec2_bastion_count" {
+  description = "Bastion host count"
+  type        = number
+  default     = 1
+}
+
+variable "ec2_app_count" {
+  description = "EC2 App server count"
+  type        = number
+  default     = 1
 }

@@ -1,55 +1,7 @@
-module "dinusha_ec2_bastion" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
-  version = ">=4.1.4"
-
-  count = 1
-
-  name = var.ec2_bastion_name
-
-  ami                    = data.aws_ami.dinusha_ami.id
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = [module.dinusha_sg_bastion.security_group_id]
-  subnet_id              = module.dinusha_vpc.public_subnets[0]
-  key_name               = module.dinusha_key_pair.key_pair_name
-}
-
-module "dinusha_ec2_app_1" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
-  version = ">=4.1.4"
-
-  count = 1
-
-  name = var.ec2_app_1_name
-
-  ami                    = data.aws_ami.dinusha_ami.id
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = [module.dinusha_sg_app.security_group_id]
-  subnet_id              = module.dinusha_vpc.private_subnets[0]
-  key_name               = module.dinusha_key_pair.key_pair_name
-
-  user_data_base64            = base64encode(local.user_data)
-  user_data_replace_on_change = true
-}
-
-module "dinusha_ec2_app_2" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
-  version = ">=4.1.4"
-
-  count = 1
-
-  name = var.ec2_app_2_name
-
-  ami                    = data.aws_ami.dinusha_ami.id
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = [module.dinusha_sg_app.security_group_id]
-  subnet_id              = module.dinusha_vpc.private_subnets[1]
-  key_name               = module.dinusha_key_pair.key_pair_name
-
-  user_data_base64            = base64encode(local.user_data)
-  user_data_replace_on_change = true
-}
-
-data "aws_ami" "dinusha_ami" {
+##########################
+# AWS AMI
+##########################
+data "aws_ami" "ami" {
   most_recent = true
 
   filter {
@@ -63,7 +15,42 @@ data "aws_ami" "dinusha_ami" {
   }
 }
 
-resource "aws_eip" "dinusha_bastion_eip" {
-  instance = module.dinusha_ec2_bastion[0].id
+##########################
+# AWS Elastic IP
+##########################
+resource "aws_eip" "bastion_eip" {
+  instance = aws_instance.bastion.id
   vpc      = true
+}
+
+##########################
+# AWS Instance - bastion
+##########################
+resource "aws_instance" "bastion" {
+  ami             = data.aws_ami.ami.id
+  instance_type   = "t2.micro"
+  security_groups = [aws_security_group.ec2_bastion.id]
+  subnet_id       = aws_subnet.public[0].id
+  key_name        = aws_key_pair.access_key.key_name
+
+  tags = {
+    "Name" = "dinusha_ha_ec2_bastion"
+  }
+}
+
+##########################
+# AWS Instance - app servers
+##########################
+resource "aws_instance" "app_server" {
+  count           = 2
+  ami             = data.aws_ami.ami.id
+  instance_type   = "t2.micro"
+  security_groups = [aws_security_group.ec2_app.id]
+  subnet_id       = aws_subnet.private_app[count.index].id
+  key_name        = aws_key_pair.access_key.key_name
+  user_data       = local.user_data
+
+  tags = {
+    "Name" = "dinusha_ha_ec2_app"
+  }
 }

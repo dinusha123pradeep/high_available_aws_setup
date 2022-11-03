@@ -1,6 +1,11 @@
-module "dinusha_key_pair" {
-  source = "terraform-aws-modules/key-pair/aws"
-
+##########################
+# AWS Key pair to access vms
+##########################
+resource "aws_key_pair" "access_key" {
   key_name   = var.dinusha_ssh_key
   public_key = file(var.public_key_path)
+
+  tags = {
+    "Name" = "dinusha_ha_key"
+  }
 }
