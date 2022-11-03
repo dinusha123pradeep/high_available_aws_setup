@@ -37,6 +37,13 @@ resource "aws_security_group" "ec2_app" {
     security_groups = [aws_security_group.alb.id]
   }
 
+  ingress {
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ec2_bastion.id]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
