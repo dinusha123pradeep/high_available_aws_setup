@@ -20,7 +20,7 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    "Name" = "dinusha_ha_sg_lb"
+    "Name" = "${var.tag_pre_fix}sg_lb"
   }
 }
 
@@ -53,7 +53,7 @@ resource "aws_security_group" "ec2_app" {
   }
 
   tags = {
-    "Name" = "dinusha_ha_sg_ec2"
+    "Name" = "${var.tag_pre_fix}sg_ec2"
   }
 }
 
@@ -72,6 +72,25 @@ resource "aws_security_group" "ec2_bastion" {
   }
 
   tags = {
-    "Name" = "dinusha_ha_sg_ec2_bastion"
+    "Name" = "${var.tag_pre_fix}sg_ec2_bastion"
+  }
+}
+
+##########################
+# AWS Security group - RDS
+##########################
+resource "aws_security_group" "rds" {
+  name   = var.sg_dinusha_rds
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ec2_app.id, aws_security_group.ec2_bastion.id]
+  }
+
+  tags = {
+    "Name" = "${var.tag_pre_fix}sg_rds"
   }
 }

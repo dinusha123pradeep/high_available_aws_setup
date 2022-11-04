@@ -29,6 +29,6 @@ resource "aws_elb" "alb" {
   connection_draining_timeout = 300
 
   tags = {
-    "Name" = "dinusha_ha_alb"
+    "Name" = "${var.tag_pre_fix}alb"
   }
 }

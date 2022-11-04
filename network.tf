@@ -5,7 +5,7 @@ resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
 
   tags = {
-    "Name" = "dinusha_ha_vpc"
+    "Name" = "${var.tag_pre_fix}vpc"
   }
 }
 
@@ -13,28 +13,42 @@ resource "aws_vpc" "vpc" {
 # AWS SUBNET - public subnets
 ##########################
 resource "aws_subnet" "public" {
-  count                   = 2
+  count                   = var.public_subnet_count
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = var.vpc_public_subnets[count.index]
   availability_zone       = var.vpc_azs[count.index]
   map_public_ip_on_launch = true
 
   tags = {
-    "Name" = "dinusha_ha_public_subnet_${count.index + 1}"
+    "Name" = "${var.tag_pre_fix}public_subnet_${count.index + 1}"
   }
 }
 
 ##########################
-# AWS SUBNET - private subnet
+# AWS SUBNET - private app subnet
 ##########################
 resource "aws_subnet" "private_app" {
-  count             = 2
+  count             = var.private_app_subnet_count
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = var.vpc_private_subnets[count.index]
+  cidr_block        = var.vpc_private_app_subnets[count.index]
   availability_zone = var.vpc_azs[count.index]
 
   tags = {
-    "Name" = "dinusha_ha_private_app_subnet_${count.index + 1}"
+    "Name" = "${var.tag_pre_fix}private_app_subnet_${count.index + 1}"
+  }
+}
+
+##########################
+# AWS SUBNET - private db subnet
+##########################
+resource "aws_subnet" "private_db" {
+  count             = var.private_db_subnet_count
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.vpc_private_db_subnets[count.index]
+  availability_zone = var.vpc_azs[count.index]
+
+  tags = {
+    "Name" = "${var.tag_pre_fix}private_app_subnet_${count.index + 1}"
   }
 }
 
@@ -45,7 +59,7 @@ resource "aws_internet_gateway" "vpc_ig" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "dinusha_ha_internet_gateway"
+    "Name" = "${var.tag_pre_fix}internet_gateway"
   }
 }
 
@@ -61,7 +75,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    "Name" = "dinusha_ha_public_route_table"
+    "Name" = "${var.tag_pre_fix}public_route_table"
   }
 }
 
@@ -69,7 +83,7 @@ resource "aws_route_table" "public" {
 # AWS Route table association - public
 ##########################
 resource "aws_route_table_association" "public" {
-  count          = 2
+  count          = var.public_subnet_count
   subnet_id      = element(aws_subnet.public[*].id, count.index)
   route_table_id = aws_route_table.public.id
 }
@@ -78,11 +92,11 @@ resource "aws_route_table_association" "public" {
 # AWS Route table - private
 ##########################
 resource "aws_route_table" "private" {
-  count  = 2
+  count  = var.private_app_subnet_count + var.private_db_subnet_count
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "dinusha_ha_private_route_table_${count.index + 1}"
+    "Name" = "${var.tag_pre_fix}private_route_table_${count.index + 1}"
   }
 }
 
@@ -95,7 +109,7 @@ resource "aws_vpc_endpoint" "s3" {
   route_table_ids = aws_route_table.private[*].id
 
   tags = {
-    "Name" = "dinusha_ha_s3_endpoint"
+    "Name" = "${var.tag_pre_fix}s3_endpoint"
   }
 }
 
@@ -103,7 +117,15 @@ resource "aws_vpc_endpoint" "s3" {
 # AWS Route table association - private
 ##########################
 resource "aws_route_table_association" "private" {
-  count          = 2
-  subnet_id      = element(aws_subnet.private_app[*].id, count.index)
+  count          = var.private_app_subnet_count + var.private_db_subnet_count
+  subnet_id      = element(concat(aws_subnet.private_app[*].id, aws_subnet.private_db[*].id), count.index)
   route_table_id = aws_route_table.private[count.index].id
+}
+
+##########################
+# AWS DB subnet group
+##########################
+resource "aws_db_subnet_group" "rds" {
+  name       = var.db_subnet_group_name
+  subnet_ids = aws_subnet.private_db[*].id
 }
