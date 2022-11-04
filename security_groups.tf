@@ -28,6 +28,7 @@ resource "aws_security_group" "alb" {
 # AWS Security group - EC2
 ##########################
 resource "aws_security_group" "ec2_app" {
+  name   = var.sg_dinusha_app
   vpc_id = aws_vpc.vpc.id
 
   ingress {
@@ -60,6 +61,7 @@ resource "aws_security_group" "ec2_app" {
 # AWS Security group - EC2 bastion
 ##########################
 resource "aws_security_group" "ec2_bastion" {
+  name   = var.sg_dinusha_bastion
   vpc_id = aws_vpc.vpc.id
 
   ingress {

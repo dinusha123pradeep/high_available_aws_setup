@@ -50,18 +50,6 @@ resource "aws_internet_gateway" "vpc_ig" {
 }
 
 ##########################
-# AWS NAT gateway
-##########################
-resource "aws_nat_gateway" "vpc_nat" {
-  connectivity_type = "private"
-  subnet_id         = aws_subnet.public[0].id
-
-  tags = {
-    "Name" = "dinusha_ha_nat_gateway"
-  }
-}
-
-##########################
 # AWS Route table - public
 ##########################
 resource "aws_route_table" "public" {
@@ -90,15 +78,24 @@ resource "aws_route_table_association" "public" {
 # AWS Route table - private
 ##########################
 resource "aws_route_table" "private" {
+  count  = 2
   vpc_id = aws_vpc.vpc.id
 
-  route {
-    cidr_block = var.vpc_public_subnets[0]
-    gateway_id = aws_nat_gateway.vpc_nat.id
+  tags = {
+    "Name" = "dinusha_ha_private_route_table_${count.index + 1}"
   }
+}
+
+##########################
+# AWS VPC Endpoint
+##########################
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id          = aws_vpc.vpc.id
+  service_name    = "com.amazonaws.us-east-1.s3"
+  route_table_ids = aws_route_table.private[*].id
 
   tags = {
-    "Name" = "dinusha_ha_private_route_table"
+    "Name" = "dinusha_ha_s3_endpoint"
   }
 }
 
@@ -108,5 +105,5 @@ resource "aws_route_table" "private" {
 resource "aws_route_table_association" "private" {
   count          = 2
   subnet_id      = element(aws_subnet.private_app[*].id, count.index)
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[count.index].id
 }
