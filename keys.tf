@@ -6,6 +6,6 @@ resource "aws_key_pair" "access_key" {
   public_key = file(var.public_key_path)
 
   tags = {
-    "Name" = "dinusha_ha_key"
+    "Name" = "${var.tag_pre_fix}key"
   }
 }

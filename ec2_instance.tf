@@ -34,7 +34,7 @@ resource "aws_instance" "bastion" {
   key_name        = aws_key_pair.access_key.key_name
 
   tags = {
-    "Name" = "dinusha_ha_ec2_bastion"
+    "Name" = "${var.tag_pre_fix}ec2_bastion"
   }
 }
 
@@ -42,7 +42,7 @@ resource "aws_instance" "bastion" {
 # AWS Instance - app servers
 ##########################
 resource "aws_instance" "app_server" {
-  count           = 2
+  count           = var.ec2_app_server_count
   ami             = data.aws_ami.ami.id
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.ec2_app.id]
@@ -51,6 +51,6 @@ resource "aws_instance" "app_server" {
   user_data       = local.user_data
 
   tags = {
-    "Name" = "dinusha_ha_ec2_app"
+    "Name" = "${var.tag_pre_fix}ec2_app"
   }
 }
