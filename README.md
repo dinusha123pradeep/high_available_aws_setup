@@ -17,8 +17,8 @@ Internet gateway
 
 Route tables and Routs
 
-Security Groups
+Security Groups, 
 
 EC2 instaces (Bastion, App Servers)
 
-RDS
+RDS with Stand By DB server
