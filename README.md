@@ -19,6 +19,6 @@ Route tables and Routs
 
 Security Groups
 
-EC2 instaces
+EC2 instaces (Bastion, App Servers)
 
 RDS
